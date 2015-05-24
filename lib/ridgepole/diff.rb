@@ -88,7 +88,7 @@ class Ridgepole::Diff
 
   def scan_options_change(table_name, from, to, table_delta)
     unless from == to
-      Ridgepole::Logger.instance.warn("[WARNING] Table `#{table_name}` options cannot be changed")
+      table_delta[:table_options] = to
     end
   end
 

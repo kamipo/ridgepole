@@ -249,10 +249,19 @@ drop_table(#{table_name.inspect})
     buf.puts
   end
 
+  def append_change_table_options(table_name, table_options, buf)
+    buf.puts(<<-EOS)
+change_table_options(#{table_name.inspect}, #{table_options[:options].inspect})
+    EOS
+
+    buf.puts
+  end
+
   def append_change(table_name, attrs, buf)
     definition = attrs[:definition] || {}
     indices = attrs[:indices] || {}
     foreign_keys = attrs[:foreign_keys] || {}
+    table_options = attrs[:table_options]
 
     if not definition.empty? or not indices.empty?
       append_change_table(table_name, buf) do
@@ -263,6 +272,10 @@ drop_table(#{table_name.inspect})
 
     unless foreign_keys.empty?
       append_change_foreign_keys(table_name, foreign_keys, buf, @options)
+    end
+
+    if table_options
+      append_change_table_options(table_name, table_options, buf)
     end
 
     buf.puts
